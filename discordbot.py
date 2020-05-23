@@ -26,5 +26,3 @@ async def on_message(message):
 #ボットを実行
 client.run(TOKEN)
 #ここより下に書かれた処理はボットが停止するまで実行されない
-
-bot.run(token)
