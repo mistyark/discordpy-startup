@@ -1,28 +1,21 @@
-# -*- coding: utf-8 -*-
+from discord.ext import commands
+import os
+import traceback
 
-# ライブラリのインポート
-import discord
-import asyncio
+bot = commands.Bot(command_prefix='/')
+token = os.environ['DISCORD_BOT_TOKEN']
 
-#bot = commands.Bot(command_prefix='/')
-TOKEN = os.environ['DISCORD_BOT_TOKEN']
 
-client = discord.Client()
+@bot.event
+async def on_command_error(ctx, error):
+    orig_error = getattr(error, "original", error)
+    error_msg = ''.join(traceback.TracebackException.from_exception(orig_error).format())
+    await ctx.send(error_msg)
 
-# ボットの起動時に実行されるイベントハンドラを定義
-@client.event
-async def on_ready():
-    print('Bot Launched')
 
-# メッセージの送信時に実行されるイベントハンドラを定義
-@client.event
-async def on_message(message):
-    if message.author.bot:
-        pass
-    elif message.content.startswith('こんにちは！'):
-        send_message = f'{message.author.mention}さん、こんにちは！'
-        await message.channel.send(send_message)
+@bot.command()
+async def ping(ctx):
+    await ctx.send('pong')
 
-#ボットを実行
-client.run(TOKEN)
-#ここより下に書かれた処理はボットが停止するまで実行されない
+
+bot.run(token)
